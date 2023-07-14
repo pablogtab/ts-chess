@@ -10,4 +10,5 @@
     z-index: 100;
     position: absolute;
     cursor: pointer;
+    transform: translate(-50%, -50%);
 }

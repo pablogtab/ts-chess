@@ -1,3 +1,4 @@
+import { SQUARE_SIZE } from "../chess-table";
 import { Square } from "../square"
 
 export class Piece {
@@ -7,7 +8,10 @@ export class Piece {
 
 export abstract class PieceMethods {
     movePosibilities: (squareMap: Square[]) => Square[]
+    isValidMove: (from: [number, number], to: [number, number]) => boolean
 }
+
+
 
 export const PIECES = {
     PAWN: { name: 'Pawn', value: 1 },
