@@ -2,22 +2,22 @@ import { Square, getAllPiecedSquares } from "../square";
 import { Piece, PieceMethods } from "./piece";
 
 export class Pawn extends Piece implements PieceMethods {
-    color: 'white' | 'black'
 
     constructor(color: 'white' | 'black') {
-        super()
-        this.type = 'PAWN'
-        this.color = color
+        super('ROOK', color)
     }
 
-    movePosibilities: (squareMap: Square[]) => Square[];
+
+
+    movePosibilities: (squareMap: Square[]) => Square[] = () => []
+
     isValidMove = ([fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
         if (Math.abs(fromX - toX) > 1) return false
         if (this.color === 'black' && fromY >= toY) return false
         if (this.color === 'white' && fromY <= toY) return false
 
         let squares = getAllPiecedSquares()
-        let rivalPiecedSquares = squares.filter(sq => sq.piece.color !== this.color)
+        let rivalPiecedSquares = squares.filter(sq => sq.piece?.color !== this.color)
 
         if (Math.abs(fromY - toY) === 1) {
             if (Math.abs(fromX - toX) === 0) {

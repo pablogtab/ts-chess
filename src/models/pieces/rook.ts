@@ -2,15 +2,12 @@ import { Square, getAllPiecedSquares } from "../square";
 import { Piece, PieceMethods } from "./piece";
 
 export class Rook extends Piece implements PieceMethods {
-    color: 'white' | 'black'
 
     constructor(color: 'white' | 'black') {
-        super()
-        this.type = 'ROOK'
-        this.color = color
+        super('ROOK', color)
     }
 
-    movePosibilities: (squareMap: Square[]) => Square[];
+    movePosibilities: (squareMap: Square[]) => Square[] = () => { return [] }
 
     isValidMove = ([fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
         if (fromX !== toX && toY !== fromY) return false
@@ -34,7 +31,7 @@ export class Rook extends Piece implements PieceMethods {
             }
         }
 
-        if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece.color === this.color).length > 1) return false
+        //if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece.color === this.color).length > 1) return false
 
         return true
     }

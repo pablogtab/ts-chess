@@ -4,9 +4,13 @@ import { Square } from "../square"
 export class Piece {
     type: PieceType
     color: 'white' | 'black'
+    constructor(type: PieceType, color: 'white' | 'black') {
+        this.color = color
+        this.type = type
+    }
 }
 
-export abstract class PieceMethods {
+export interface PieceMethods {
     movePosibilities: (squareMap: Square[]) => Square[]
     isValidMove: (from: [number, number], to: [number, number]) => boolean
 }

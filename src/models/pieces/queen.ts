@@ -2,15 +2,11 @@ import { Square, getAllPiecedSquares } from "../square";
 import { Piece, PieceMethods } from "./piece";
 
 export class Queen extends Piece implements PieceMethods {
-    color: 'white' | 'black'
-
     constructor(color: 'white' | 'black') {
-        super()
-        this.type = 'QUEEN'
-        this.color = color
+        super('QUEEN', color)
     }
 
-    movePosibilities: (squareMap: Square[]) => Square[];
+    movePosibilities: (squareMap: Square[]) => Square[] = () => []
     isValidMove = ([fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
 
 
@@ -35,7 +31,7 @@ export class Queen extends Piece implements PieceMethods {
                 }
             }
 
-            if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece.color === this.color).length > 1) return false
+            //if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece.color === this.color).length > 1) return false
             return true
         }
 
@@ -53,16 +49,20 @@ export class Queen extends Piece implements PieceMethods {
             switch (direction) {
                 case "upleft":
                     if (squares.filter(sq => sq.x === (toX + i) && sq.y === (toY + i)).length > 0) return false
+                    break;
                 case "upright":
                     if (squares.filter(sq => sq.x === toX - i && sq.y === (toY + i)).length > 0) return false
+                    break;
                 case "downleft":
                     if (squares.filter(sq => sq.x === (fromX - i) && sq.y === (fromY + i)).length > 0) return false
+                    break;
                 case "downright":
                     if (squares.filter(sq => sq.x === (fromX + i) && sq.y === (fromY + i)).length > 0) return false
+                    break;
             }
         }
 
-        if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece.color === this.color).length > 1) return false
+        //if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece.color === this.color).length > 1) return false
 
         return true
 
