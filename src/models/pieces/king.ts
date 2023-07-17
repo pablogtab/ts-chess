@@ -1,5 +1,5 @@
-import { Square, getAllPiecedSquares } from "../square";
-import { Piece, PieceMethods } from "./piece";
+import { Square } from '../square';
+import { Piece, PieceMethods } from './piece';
 
 export class King extends Piece implements PieceMethods {
     constructor(color: 'white' | 'black') {
