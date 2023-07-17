@@ -9,12 +9,11 @@ export class Rook extends Piece implements PieceMethods {
 
     movePosibilities: (squareMap: Square[]) => Square[] = () => { return [] }
 
-    isValidMove = ([fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
+    isValidMove = (squares: Square[], [fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
         if (fromX !== toX && toY !== fromY) return false
 
         let moves = Math.abs(toX !== fromX ? (fromX - toX) : (fromY - toY))
 
-        let squares = getAllPiecedSquares()
         for (let i = 1; i < moves; i++) { //collition between
             if (toX !== fromX) {
                 if (toX > fromX) {
@@ -31,7 +30,7 @@ export class Rook extends Piece implements PieceMethods {
             }
         }
 
-        //if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece.color === this.color).length > 1) return false
+        if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece?.color === this.color).length > 0) return false
 
         return true
     }

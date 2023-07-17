@@ -12,7 +12,7 @@ export class Piece {
 
 export interface PieceMethods {
     movePosibilities: (squareMap: Square[]) => Square[]
-    isValidMove: (from: [number, number], to: [number, number]) => boolean
+    isValidMove: (squares: Square[], from: [number, number], to: [number, number]) => boolean
 }
 
 

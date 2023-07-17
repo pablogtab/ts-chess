@@ -8,41 +8,57 @@ import { Queen } from "./pieces/queen";
 import { Rook } from "./pieces/rook";
 
 
-let TURN: 'white' | 'black' = "white"
-
-type PosibleSquarePiece = Queen | King | Pawn | Knight | Bishop | Rook | null
+export type Pieces = Queen | King | Pawn | Knight | Bishop | Rook
 
 
 
 
 export class Square {
-    x: number; y: number; piece: PosibleSquarePiece; divContainer: HTMLElement
-    constructor(divContainer: HTMLElement, x: number, y: number, piece: PosibleSquarePiece = null) {
+    x: number;
+    y: number;
+    piece: Pieces | null;
+    color: 'black' | 'white'
+
+    constructor(x: number, y: number, piece: Pieces | null = null) {
         this.x = x;
         this.y = y;
         this.piece = piece;
-        this.divContainer = divContainer
+        this.color = (this.y * 1 + this.x * 1) % 2 ? 'black' : 'white'
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
-        ctx.fillStyle = (this.y * 1 + this.x * 1) % 2 ? '#000000' : '#FFFFFF'
-        ctx.fillRect(SQUARE_SIZE * this.x, SQUARE_SIZE * this.y, SQUARE_SIZE, SQUARE_SIZE)
-
-        if (this.piece) {
-            let pieceDraw = document.createElement('div')
-            //this.dragElement(pieceDraw)
-            pieceDraw.setAttribute('class', 'piece')
-            pieceDraw.setAttribute('name', 'piece')
-            pieceDraw.setAttribute('type', this.piece.type)
-            pieceDraw.setAttribute('color', this.piece.color)
-            pieceDraw.innerHTML = this.piece.type
-            pieceDraw.style.top = (50 + (this.y * SQUARE_SIZE)) + 'px'
-            pieceDraw.style.left = ((10 + SQUARE_SIZE / 2) + this.x * SQUARE_SIZE) + 'px'
-            pieceDraw.style.textAlign = 'center'
-            pieceDraw.style.color = this.piece.color === 'black' ? 'green' : 'red'
-            this.divContainer.appendChild(pieceDraw)
+    static fromPiecedSquare(sq: Square): Square {
+        let piece;
+        switch (sq.piece?.type) {
+            case 'BISHOP': piece = new Bishop(sq.piece.color); break;
+            case 'KING': piece = new King(sq.piece.color); break;
+            case 'QUEEN': piece = new Queen(sq.piece.color); break;
+            case 'KNIGHT': piece = new Knight(sq.piece.color); break;
+            case 'PAWN': piece = new Pawn(sq.piece.color); break;
+            case 'ROOK': piece = new Rook(sq.piece.color); break;
+            default: throw Error
         }
+        let tmp = new Square(sq.x, sq.y, piece)
+        return tmp
     }
+
+    // draw(ctx: CanvasRenderingContext2D) {
+    //     ctx.fillStyle = (this.y * 1 + this.x * 1) % 2 ? '#000000' : '#FFFFFF'
+    //     ctx.fillRect(SQUARE_SIZE * this.x, SQUARE_SIZE * this.y, SQUARE_SIZE, SQUARE_SIZE)
+
+    //     if (this.piece) {
+    //         let pieceDraw = document.createElement('div')
+    //         //this.dragElement(pieceDraw)
+    //         pieceDraw.setAttribute('class', 'piece')
+    //         pieceDraw.setAttribute('name', 'piece')
+    //         pieceDraw.setAttribute('type', this.piece.type)
+    //         pieceDraw.setAttribute('color', this.piece.color)
+    //         pieceDraw.innerHTML = this.piece.type
+    //         pieceDraw.style.top = (50 + (this.y * SQUARE_SIZE)) + 'px'
+    //         pieceDraw.style.left = ((10 + SQUARE_SIZE / 2) + this.x * SQUARE_SIZE) + 'px'
+    //         pieceDraw.style.textAlign = 'center'
+    //         pieceDraw.style.color = this.piece.color === 'black' ? 'green' : 'red'
+    //     }
+    // }
 
     // dragElement(elmnt: HTMLElement) {
     //     const dragMouseDown = (e: any) => {
@@ -140,7 +156,7 @@ export function getAllPiecedSquares(): Square[] {
         const x = Math.floor(Number(element.style.left.slice(0, -2)) / SQUARE_SIZE)
         const type = element.getAttribute('type') as unknown as PieceType
         const color = element.getAttribute('color') as 'white' | 'black'
-        let piece: PosibleSquarePiece
+        let piece: Pieces | null
         switch (type) {
             case "PAWN": piece = new Pawn(color); break;
             case "ROOK": piece = new Rook(color); break;
@@ -150,7 +166,7 @@ export function getAllPiecedSquares(): Square[] {
             case "QUEEN": piece = new Queen(color); break;
         }
         if (element.parentElement) {
-            let square = new Square(element.parentElement, x, y, piece)
+            let square = new Square(x, y, piece)
             return square;
         } else throw Error
     }

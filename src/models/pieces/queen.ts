@@ -7,7 +7,7 @@ export class Queen extends Piece implements PieceMethods {
     }
 
     movePosibilities: (squareMap: Square[]) => Square[] = () => []
-    isValidMove = ([fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
+    isValidMove = (squares: Square[], [fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
 
 
 
@@ -43,7 +43,6 @@ export class Queen extends Piece implements PieceMethods {
         } else {
             direction = toY > fromY ? 'downleft' : 'upleft'
         }
-        let squares = getAllPiecedSquares()
 
         for (let i = 1; i < moves; i++) {
             switch (direction) {
@@ -62,13 +61,9 @@ export class Queen extends Piece implements PieceMethods {
             }
         }
 
-        //if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece.color === this.color).length > 1) return false
+        if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece?.color === this.color).length > 0) return false
 
         return true
 
-
-
-
-        return false
     }
 }

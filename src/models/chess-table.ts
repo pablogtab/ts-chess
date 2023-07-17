@@ -26,11 +26,11 @@ export class ChessTable {
         div.style.height = '660px'
         div.style.position = 'relative'
         div.appendChild(canvasElement)
-        this.ctx = canvasElement.getContext('2d')
+        this.ctx = canvasElement.getContext('2d') as CanvasRenderingContext2D
         this.squares = []
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
-                let sqr = new Square(this.divContainer, j, i)
+                let sqr = new Square(j, i)
                 if (i === 0) {
                     switch (j) {
                         case 0: sqr.piece = new Rook('black'); break;
@@ -64,11 +64,11 @@ export class ChessTable {
         }
     }
 
-    draw() {
-        this.squares.forEach(sqr => {
-            sqr.draw(this.ctx)
-        })
-    }
+    // draw() {
+    //     this.squares.forEach(sqr => {
+    //         sqr.draw(this.ctx)
+    //     })
+    // }
 
 }
 
