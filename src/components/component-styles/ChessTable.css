@@ -1,0 +1,35 @@
+p {
+    font-size: 20px;
+}
+
+
+.square {
+    position: absolute;
+    z-index: 10
+}
+
+
+.container {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.chess-container {
+    border: 10px solid black;
+    width: fit-content;
+}
+
+.chess-table {
+    width: 640px;
+    height: 640px;
+    position: relative;
+}
+
+
+.draggablePiece {
+    position: absolute;
+    z-index: 100;
+    text-align: center;
+    width:80px
+}
