@@ -25,7 +25,7 @@ export class Queen extends Piece implements PieceMethods {
                 }
             }
 
-            //if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece.color === this.color).length > 1) return false
+            if (squares.filter(sq => sq.x === toX && sq.y === toY && sq.piece?.color === this.color).length > 0) return false
             return true
         }
 

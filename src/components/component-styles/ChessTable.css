@@ -16,7 +16,8 @@ p {
 }
 
 .chess-container {
-    border: 10px solid black;
+    margin-left: 40px;
+    border: 10px solid rgb(63, 50, 6);
     width: fit-content;
 }
 
@@ -31,5 +32,11 @@ p {
     position: absolute;
     z-index: 100;
     text-align: center;
-    width:80px
+    width: 80px
+}
+
+.dropping {
+    box-shadow: -1px -1px 32px 4px rgba(201,195,89,0.9) inset;
+    -webkit-box-shadow: -1px -1px 32px 4px rgba(201,195,89,0.9) inset;
+    -moz-box-shadow: -1px -1px 32px 4px rgba(201,195,89,0.9) inset;
 }
