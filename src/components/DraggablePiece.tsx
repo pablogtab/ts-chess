@@ -33,9 +33,12 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
         setTimeout(() => {
             if (setMoveIfDrops) setMoveIfDrops(null)
         }, 40)
+
         if (!sq || !sq.piece || !dispatch || !setTurn) return
 
         if (!toSquare || !sq.piece.isValidMove(squares.filter(sq => sq.piece), [initialXPosition, initialYPosition], [x, y])) return resetPiece(sq)
+
+
 
         movePiece(sq, toSquare)
         setTurn(turn === 'black' ? 'white' : 'black')
@@ -97,10 +100,13 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
         <Draggable
             defaultClassNameDragging='drawing'
             onDrag={onMoving}
-            disabled={piece.color !== turn} nodeRef={nodeRef}
+            onStart={() => console.log('start', piece)}
+            onStop={onPieceDrop} 
+            disabled={piece.color !== turn}
+            nodeRef={nodeRef}
             defaultPosition={{ x: initialXPosition * SQUARE_SIZE, y: initialYPosition * SQUARE_SIZE }}
             defaultClassName="draggablePiece"
-            onStart={() => console.log('start', piece)} onStop={onPieceDrop} >
+            >
             <div ref={nodeRef} >
                 <img className="piece-img" style={{ width: '80px', height: '80px' }} src={getPieceImage(piece)} />
             </div>

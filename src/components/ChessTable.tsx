@@ -16,6 +16,7 @@ type ChessContext = {
     setTurn: React.Dispatch<'white' | 'black'> | undefined
     moveIfDrops: { x: number, y: number } | null
     setMoveIfDrops: React.Dispatch<{ x: number, y: number } | null> | undefined
+    posibleMoves: ({ x: number, y: number })[]
 }
 
 export const ChessTableContext = createContext<ChessContext>({
@@ -24,7 +25,8 @@ export const ChessTableContext = createContext<ChessContext>({
     turn: 'white',
     setTurn: undefined,
     moveIfDrops: null,
-    setMoveIfDrops: undefined
+    setMoveIfDrops: undefined,
+    posibleMoves: []
 })
 
 
@@ -34,6 +36,7 @@ export const ChessTable = () => {
     const { squares, dispatch } = useChess()
     const [turn, setTurn] = useState<'white' | 'black'>('white')
     const [moveIfDrops, setMoveIfDrops] = useState<{ x: number, y: number } | null>(null)
+    const [posibleMoves, setPosibleMoves] = useState<{ x: number, y: number }[]>([])
 
 
     const SquareRender = ({ value }: { value: Square }) => {
@@ -63,14 +66,14 @@ export const ChessTable = () => {
             turn,
             setTurn,
             moveIfDrops,
-            setMoveIfDrops
+            setMoveIfDrops,
+            posibleMoves
         }}>
             <div className='container' >
                 <div className='chess-container'>
                     <div className='chess-table' ref={chessTableRef}>
                         {
-                            squares.length > 1 &&
-                            squares.map((square, index) => <SquareRender value={square} key={index} />)
+                            squares.length > 1 && squares.map((square, index) => <SquareRender value={square} key={index} />)
                         }
                         {
                             squares.length > 1 &&

@@ -10,9 +10,6 @@ import { Rook } from "./pieces/rook";
 
 export type Pieces = Queen | King | Pawn | Knight | Bishop | Rook
 
-
-
-
 export class Square {
     x: number;
     y: number;
