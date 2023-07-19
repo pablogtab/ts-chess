@@ -42,45 +42,42 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
 
         movePiece(sq, toSquare)
         setTurn(turn === 'black' ? 'white' : 'black')
-        if (setPosibleMoves) setPosibleMoves([])
-        if (setLastTouchedSquare) setLastTouchedSquare(null)
+        setPosibleMoves([])
+        setLastTouchedSquare(null)
 
     }
 
 
     const onMoving = (event: any) => {
-
-        if (setMoveIfDrops) {
-            let y = Math.floor((event.y - (chessTableRef?.current?.offsetTop ?? 0)) / 80)
-            let x = Math.floor((event.x - (chessTableRef?.current?.offsetLeft ?? 0)) / 80)
-            if (!(x < 0 || y < 0 || y > 7 || x > 7)) {
-                if (moveIfDrops?.x !== x || moveIfDrops.y !== y) {
-                    setMoveIfDrops({ x, y })
-                }
-            } else {
-                if (moveIfDrops) {
-                    setMoveIfDrops(null)
-                }
+        let y = Math.floor((event.y - (chessTableRef?.current?.offsetTop ?? 0)) / 80)
+        let x = Math.floor((event.x - (chessTableRef?.current?.offsetLeft ?? 0)) / 80)
+        if (!(x < 0 || y < 0 || y > 7 || x > 7)) {
+            if (moveIfDrops?.x !== x || moveIfDrops.y !== y) {
+                setMoveIfDrops({ x, y })
+            }
+        } else {
+            if (moveIfDrops) {
+                setMoveIfDrops(null)
             }
         }
     }
 
 
     const movePiece = (fromSq: Square, toSq: Square) => {
-        if (dispatch !== undefined && fromSq && setLastMove) {
-            setLastMove({ from: { x: fromSq.x, y: fromSq.y }, to: { x: toSq.x, y: toSq.y } })
-            let tmp = Square.fromPiecedSquare(JSON.parse(JSON.stringify(fromSq)) as Square)
-            dispatch({ type: 'piece_delete', payload: fromSq })
-            tmp.x = toSq.x
-            tmp.y = toSq.y
-            setTimeout(() => {
-                dispatch({ type: 'piece_reset', payload: tmp })
-            }, 5)
-        }
+
+        setLastMove({ from: { x: fromSq.x, y: fromSq.y }, to: { x: toSq.x, y: toSq.y } })
+        let tmp = Square.fromPiecedSquare(JSON.parse(JSON.stringify(fromSq)) as Square)
+        dispatch({ type: 'piece_delete', payload: fromSq })
+        tmp.x = toSq.x
+        tmp.y = toSq.y
+        setTimeout(() => {
+            dispatch({ type: 'piece_reset', payload: tmp })
+        }, 5)
+
     }
 
     const resetPiece = (sq: Square | undefined) => {
-        if (dispatch !== undefined && sq) {
+        if (sq) {
             let tmp = Square.fromPiecedSquare(JSON.parse(JSON.stringify(sq)) as Square)
             dispatch({ type: 'piece_delete', payload: sq });
             setTimeout(() => {
@@ -101,21 +98,21 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
     }
 
     const onStart = () => {
-
-        if (posibleMoves.length && lastTouchedSquare?.x === initialXPosition && lastTouchedSquare.y === initialYPosition && setLastTouchedSquare && setPosibleMoves) {
+        if (posibleMoves.length && lastTouchedSquare?.x === initialXPosition && lastTouchedSquare.y === initialYPosition) {
             setLastTouchedSquare(null)
             setPosibleMoves([])
             return
         }
         let sq = squares.find(sq => sq.x === initialXPosition && sq.y === initialYPosition)
-
-        if (sq && setPosibleMoves) setPosibleMoves([...piece.movePosibilities(squares, sq)])
-        if (sq && setLastTouchedSquare) setLastTouchedSquare(sq)
+        if (sq) {
+            setPosibleMoves([...piece.movePosibilities(squares, sq)])
+            setLastTouchedSquare(sq)
+        }
     }
 
 
     const handleMoveUndraggables = () => {
-        if (piece.color !== turn && handleMove) {
+        if (piece.color !== turn ) {
             let tmp = new Square(initialXPosition, initialYPosition, piece)
             handleMove(tmp)
         }
