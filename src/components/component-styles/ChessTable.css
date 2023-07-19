@@ -36,7 +36,20 @@ p {
 }
 
 .dropping {
-    box-shadow: -1px -1px 32px 4px rgba(201,195,89,0.9) inset;
-    -webkit-box-shadow: -1px -1px 32px 4px rgba(201,195,89,0.9) inset;
-    -moz-box-shadow: -1px -1px 32px 4px rgba(201,195,89,0.9) inset;
+    box-shadow: -1px -1px 2px 4px rgba(255, 254, 240, 0.9) inset;
+    -webkit-box-shadow: -1px -1px 2px 4px rgba(255, 254, 240, 0.9) inset;
+    -moz-box-shadow: -1px -1px 2px 4px rgba(255, 254, 240, 0.9) inset;
+}
+
+.posible-move{
+    position:absolute;
+    background-color: black;
+    width: 40%;
+    height:40%;
+    border-radius: 50%;
+    opacity: 0.25;
+    z-index: 150;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
 }

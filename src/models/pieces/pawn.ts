@@ -9,15 +9,14 @@ export class Pawn extends Piece implements PieceMethods {
 
 
 
-    movePosibilities: (squareMap: Square[]) => Square[] = () => []
 
     isValidMove = (squares: Square[], [fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
         if (Math.abs(fromX - toX) > 1) return false
         if (this.color === 'black' && fromY >= toY) return false
         if (this.color === 'white' && fromY <= toY) return false
-
+        
         let rivalPiecedSquares = squares.filter(sq => sq.piece?.color !== this.color)
-
+        
         if (Math.abs(fromY - toY) === 1) {
             if (Math.abs(fromX - toX) === 0) {
                 if (squares.filter(sq => sq.x === toX && sq.y === toY).length > 0) return false

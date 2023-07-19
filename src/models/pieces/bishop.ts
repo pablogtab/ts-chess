@@ -7,7 +7,6 @@ export class Bishop extends Piece implements PieceMethods {
         super('BISHOP', color)
     }
 
-    movePosibilities: (squareMap: Square[]) => Square[] = () => []
     isValidMove = (squares: Square[], [fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
         if (Math.abs(fromX - toX) - Math.abs(fromY - toY) !== 0) return false
         let moves = Math.abs(toX - fromX)

@@ -7,7 +7,6 @@ export class Rook extends Piece implements PieceMethods {
         super('ROOK', color)
     }
 
-    movePosibilities: (squareMap: Square[]) => Square[] = () => { return [] }
 
     isValidMove = (squares: Square[], [fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
         if (fromX !== toX && toY !== fromY) return false

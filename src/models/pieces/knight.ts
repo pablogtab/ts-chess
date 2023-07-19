@@ -8,7 +8,6 @@ export class Knight extends Piece implements PieceMethods {
     }
 
 
-    movePosibilities: (squareMap: Square[]) => Square[] = () => []
     isValidMove = (squares: Square[], [fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
 
         let xDif = Math.abs(fromX - toX)

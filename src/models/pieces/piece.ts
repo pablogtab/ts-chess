@@ -8,10 +8,15 @@ export class Piece {
         this.color = color
         this.type = type
     }
+    movePosibilities: (squares: Square[], origin: Square) => Square[] = (squares: Square[], origin: Square) => {
+        if (!origin.piece) return []
+        let posibleMoves = squares.filter(sq => !(sq.x === origin.x && sq.y === origin.y) && origin.piece?.isValidMove(squares.filter(sq => sq.piece), [origin.x, origin.y], [sq.x, sq.y]))
+        return posibleMoves
+    }
 }
 
 export interface PieceMethods {
-    movePosibilities: (squares: Square[], origin: Square) => {}
+    movePosibilities: (squares: Square[], origin: Square) => ({ x: number, y: number })[]
     isValidMove: (squares: Square[], from: [number, number], to: [number, number]) => boolean
 }
 

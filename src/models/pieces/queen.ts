@@ -5,7 +5,6 @@ export class Queen extends Piece implements PieceMethods {
     constructor(color: 'white' | 'black') {
         super('QUEEN', color)
     }
-    movePosibilities: (squareMap: Square[]) => Square[] = () => []
     isValidMove = (squares: Square[], [fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
         if (!(fromX !== toX && toY !== fromY)) { // ROOK MOVES
             let moves = Math.abs(toX !== fromX ? (fromX - toX) : (fromY - toY))

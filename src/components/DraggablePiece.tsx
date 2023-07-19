@@ -1,3 +1,5 @@
+import './component-styles/DraggablePiece.css';
+
 import { useContext, useRef } from 'react';
 import Draggable from 'react-draggable';
 
@@ -16,37 +18,38 @@ import whiteRook from '../assets/wr.png';
 import { SQUARE_SIZE } from '../models/chess-table';
 import { Piece } from '../models/pieces/piece';
 import { Pieces, Square } from '../models/square';
-import { ChessTableContext } from './ChessTable';
-import './component-styles/DraggablePiece.css'
+import { useChessContext, useChessDispatchContext } from '../context/ChessContext';
 
 export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { piece: Pieces, initialXPosition: number, initialYPosition: number }) => {
 
     const nodeRef = useRef(null)
-    const { chessTableRef, squares, dispatch, turn, setTurn, moveIfDrops, setMoveIfDrops } = useContext(ChessTableContext)
+
+    const { chessTableRef, squares, turn, moveIfDrops, lastTouchedSquare, posibleMoves } = useChessContext()
+    const { dispatch, handleMove, setLastMove, setLastTouchedSquare, setMoveIfDrops, setPosibleMoves, setTurn } = useChessDispatchContext()
+
+
 
     const onPieceDrop = (event: any) => {
+
+        setMoveIfDrops(null)
         let y = Math.floor((event.y - (chessTableRef?.current?.offsetTop ?? 0)) / 80)
         let x = Math.floor((event.x - (chessTableRef?.current?.offsetLeft ?? 0)) / 80)
         let sq = squares.find(sq => sq.x === initialXPosition && sq.y === initialYPosition)
         let toSquare = squares.find(sq => sq.x === x && sq.y === y)
-
-        setTimeout(() => {
-            if (setMoveIfDrops) setMoveIfDrops(null)
-        }, 40)
-
         if (!sq || !sq.piece || !dispatch || !setTurn) return
 
         if (!toSquare || !sq.piece.isValidMove(squares.filter(sq => sq.piece), [initialXPosition, initialYPosition], [x, y])) return resetPiece(sq)
 
-
-
         movePiece(sq, toSquare)
         setTurn(turn === 'black' ? 'white' : 'black')
+        if (setPosibleMoves) setPosibleMoves([])
+        if (setLastTouchedSquare) setLastTouchedSquare(null)
 
     }
 
 
     const onMoving = (event: any) => {
+
         if (setMoveIfDrops) {
             let y = Math.floor((event.y - (chessTableRef?.current?.offsetTop ?? 0)) / 80)
             let x = Math.floor((event.x - (chessTableRef?.current?.offsetLeft ?? 0)) / 80)
@@ -64,7 +67,8 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
 
 
     const movePiece = (fromSq: Square, toSq: Square) => {
-        if (dispatch !== undefined && fromSq && setMoveIfDrops) {
+        if (dispatch !== undefined && fromSq && setLastMove) {
+            setLastMove({ from: { x: fromSq.x, y: fromSq.y }, to: { x: toSq.x, y: toSq.y } })
             let tmp = Square.fromPiecedSquare(JSON.parse(JSON.stringify(fromSq)) as Square)
             dispatch({ type: 'piece_delete', payload: fromSq })
             tmp.x = toSq.x
@@ -96,18 +100,40 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
         }
     }
 
+    const onStart = () => {
+
+        if (posibleMoves.length && lastTouchedSquare?.x === initialXPosition && lastTouchedSquare.y === initialYPosition && setLastTouchedSquare && setPosibleMoves) {
+            setLastTouchedSquare(null)
+            setPosibleMoves([])
+            return
+        }
+        let sq = squares.find(sq => sq.x === initialXPosition && sq.y === initialYPosition)
+
+        if (sq && setPosibleMoves) setPosibleMoves([...piece.movePosibilities(squares, sq)])
+        if (sq && setLastTouchedSquare) setLastTouchedSquare(sq)
+    }
+
+
+    const handleMoveUndraggables = () => {
+        if (piece.color !== turn && handleMove) {
+            let tmp = new Square(initialXPosition, initialYPosition, piece)
+            handleMove(tmp)
+        }
+    }
+
     return (
         <Draggable
+            allowAnyClick={false}
             defaultClassNameDragging='drawing'
             onDrag={onMoving}
-            onStart={() => console.log('start', piece)}
-            onStop={onPieceDrop} 
+            onStart={onStart}
+            onStop={onPieceDrop}
             disabled={piece.color !== turn}
             nodeRef={nodeRef}
             defaultPosition={{ x: initialXPosition * SQUARE_SIZE, y: initialYPosition * SQUARE_SIZE }}
             defaultClassName="draggablePiece"
-            >
-            <div ref={nodeRef} >
+        >
+            <div ref={nodeRef} onClick={handleMoveUndraggables}>
                 <img className="piece-img" style={{ width: '80px', height: '80px' }} src={getPieceImage(piece)} />
             </div>
         </Draggable>

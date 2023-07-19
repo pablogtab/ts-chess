@@ -56,9 +56,6 @@ export class ChessTable {
                         case 7: sqr.piece = new Rook('white'); break;
                     }
                 }
-
-                // if (i === 3 && j === 3) sqr.piece = new King('white')
-                // if (i === 3 && j === 5) sqr.piece = new King('white')
                 this.squares.push(sqr)
             }
         }

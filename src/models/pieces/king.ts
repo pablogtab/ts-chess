@@ -6,7 +6,6 @@ export class King extends Piece implements PieceMethods {
         super('KING',color)
     }
 
-    movePosibilities: (squareMap: Square[]) => Square[] = () => []
     isValidMove = (squares: Square[], [fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
 
         let difX = Math.abs(toX - fromX)
