@@ -29,8 +29,8 @@ const getInitialState: () => Square[] = () => {
                     case 6: sqr.piece = new Knight('black'); break;
                     case 7: sqr.piece = new Rook('black'); break;
                 }
-            } else if (i === 1) {  /*sqr.piece = new Pawn('black') */ }
-            else if (i === 6) { /*sqr.piece = new Pawn('white')*/ }
+            } else if (i === 1) {  sqr.piece = new Pawn('black')  }
+            else if (i === 6) { sqr.piece = new Pawn('white') }
             else if (i === 7) {
                 switch (j) {
                     case 0: sqr.piece = new Rook('white'); break;

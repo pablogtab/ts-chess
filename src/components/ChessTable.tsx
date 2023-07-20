@@ -6,7 +6,7 @@ import { SquareActions, useChess } from '../hooks/useSquares';
 import { Square } from '../models/square';
 import { DraggablePiece } from './DraggablePiece';
 import { ChessContext, ChessDispatchContext } from '../context/ChessContext';
-import { chessSquaresAfterMove, isAnyKingInCheck } from '../models/pieces/chess';
+import { chessSquaresAfterMove, isAnyKingInCheck, valorateCurrentPosition } from '../models/chess';
 
 export const SQUARE_SIZE = 80
 
@@ -22,6 +22,12 @@ export const ChessTable = () => {
     const [lastMove, setLastMove] = useState<{ from: ({ x: number, y: number }), to: ({ x: number, y: number }) } | null>(null)
     const [kingInCheck, setKingInCheck] = useState<'white' | 'black' | null>(null)
 
+
+    useEffect(() => {
+        valorateCurrentPosition(squares)
+    }, [turn])
+
+
     const handleMove = (value: Square) => {
         if (lastTouchedSquare && lastTouchedSquare.piece) {
             if (lastTouchedSquare.piece.isValidMove(squares.filter(sq => sq.piece), [lastTouchedSquare.x, lastTouchedSquare.y], [value.x, value.y])) {
@@ -30,27 +36,24 @@ export const ChessTable = () => {
                 let squaresIfMoved = chessSquaresAfterMove(squares, [lastTouchedSquare.x, lastTouchedSquare.y], [value.x, value.y])
                 let check = isAnyKingInCheck(squaresIfMoved)
 
-                if (turn === 'black' && check.black) return 
-                if (turn === 'white' && check.white) return 
+                if (turn === 'black' && check.black) return
+                if (turn === 'white' && check.white) return
 
                 if (check.black) setKingInCheck('black')
                 else if (check.white) setKingInCheck('white')
                 else setKingInCheck(null)
-
-
 
                 if (lastTouchedSquare) {
                     let tmp = Square.fromPiecedSquare(JSON.parse(JSON.stringify(lastTouchedSquare)) as Square)
                     dispatch({ type: 'piece_delete', payload: lastTouchedSquare })
                     tmp.x = value.x
                     tmp.y = value.y
-                    setTimeout(() => {
-                        dispatch({ type: 'piece_reset', payload: tmp })
-                    }, 5)
+                    dispatch({ type: 'piece_reset', payload: tmp })
                 }
-                setTurn(turn === 'black' ? 'white' : 'black')
                 if (setPosibleMoves) setPosibleMoves([])
                 if (setLastTouchedSquare) setLastTouchedSquare(null)
+
+                setTurn(turn === 'black' ? 'white' : 'black')
             }
             else {
                 setLastTouchedSquare(null)

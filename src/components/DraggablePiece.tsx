@@ -16,7 +16,7 @@ import whitePawn from '../assets/wp.png';
 import whiteQueen from '../assets/wq.png';
 import whiteRook from '../assets/wr.png';
 import { useChessContext, useChessDispatchContext } from '../context/ChessContext';
-import { chessSquaresAfterMove, isAnyKingInCheck } from '../models/pieces/chess';
+import { chessSquaresAfterMove, isAnyKingInCheck } from '../models/chess';
 import { Piece } from '../models/pieces/piece';
 import { Pieces, Square } from '../models/square';
 import { SQUARE_SIZE } from './ChessTable';
@@ -87,9 +87,7 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
         dispatch({ type: 'piece_delete', payload: fromSq })
         tmp.x = toSq.x
         tmp.y = toSq.y
-        setTimeout(() => {
-            dispatch({ type: 'piece_reset', payload: tmp })
-        }, 5)
+        dispatch({ type: 'piece_reset', payload: tmp })
 
     }
 

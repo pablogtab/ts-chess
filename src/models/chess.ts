@@ -1,4 +1,5 @@
-import { Square } from "../square";
+import { Square } from "./square";
+import { PIECES, Piece } from "./pieces/piece";
 
 //This file is  made to hold all functions related to chess-game
 export const isAnyKingInCheck = (all64squares: Square[]): { white: boolean, black: boolean } => {
@@ -27,7 +28,6 @@ export const isAnyKingInCheck = (all64squares: Square[]): { white: boolean, blac
     return { white: whiteKingCheck, black: blackKingCheck }
 }
 
-
 export const chessSquaresAfterMove = (all64squares: Square[], [fromX, fromY]: [number, number], [toX, toY]: [number, number]) => {
     let tmpSqu = (JSON.parse(JSON.stringify(all64squares)) as Square[])
     let tmp = tmpSqu.find(sq => sq.x === fromX && sq.y === fromY)
@@ -39,3 +39,27 @@ export const chessSquaresAfterMove = (all64squares: Square[], [fromX, fromY]: [n
     movingSquare.piece = tmp2.piece
     return tmpSqu
 }
+
+
+export const bestNextMove = (all64squares: Square[], turn: 'white' | 'black') => {
+
+}
+
+
+export const valorateCurrentPosition = (all64squares: Square[]) => {
+    let tmpSqu = (JSON.parse(JSON.stringify(all64squares)) as Square[])
+    let whitePieces = tmpSqu.filter(sq => sq.piece?.color === 'white').filter(sq => !!sq.piece).map(sq => sq.piece) as Piece[]
+    let blackPieces = tmpSqu.filter(sq => sq.piece?.color === 'black').filter(sq => !!sq.piece).map(sq => sq.piece) as Piece[]
+    console.log(whitePieces.reduce((acc, curr) => acc + PIECES[curr?.type].value, 0))
+    console.log(blackPieces.reduce((acc, curr) => acc + PIECES[curr?.type].value, 0))
+
+
+}
+
+
+
+
+
+
+
+
