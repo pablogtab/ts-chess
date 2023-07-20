@@ -15,17 +15,18 @@ import whiteKnight from '../assets/wn.png';
 import whitePawn from '../assets/wp.png';
 import whiteQueen from '../assets/wq.png';
 import whiteRook from '../assets/wr.png';
-import { SQUARE_SIZE } from '../models/chess-table';
+import { useChessContext, useChessDispatchContext } from '../context/ChessContext';
+import { chessSquaresAfterMove, isAnyKingInCheck } from '../models/pieces/chess';
 import { Piece } from '../models/pieces/piece';
 import { Pieces, Square } from '../models/square';
-import { useChessContext, useChessDispatchContext } from '../context/ChessContext';
+import { SQUARE_SIZE } from './ChessTable';
 
 export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { piece: Pieces, initialXPosition: number, initialYPosition: number }) => {
 
     const nodeRef = useRef(null)
 
-    const { chessTableRef, squares, turn, moveIfDrops, lastTouchedSquare, posibleMoves } = useChessContext()
-    const { dispatch, handleMove, setLastMove, setLastTouchedSquare, setMoveIfDrops, setPosibleMoves, setTurn } = useChessDispatchContext()
+    const { chessTableRef, squares, turn, moveIfDrops, lastTouchedSquare, posibleMoves, kingInCheck } = useChessContext()
+    const { dispatch, handleMove, setLastMove, setLastTouchedSquare, setMoveIfDrops, setPosibleMoves, setTurn, setKingInCheck } = useChessDispatchContext()
 
 
 
@@ -36,9 +37,26 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
         let x = Math.floor((event.x - (chessTableRef?.current?.offsetLeft ?? 0)) / 80)
         let sq = squares.find(sq => sq.x === initialXPosition && sq.y === initialYPosition)
         let toSquare = squares.find(sq => sq.x === x && sq.y === y)
-        if (!sq || !sq.piece || !dispatch || !setTurn) return
+
+
+        if (!sq || !sq.piece) return
 
         if (!toSquare || !sq.piece.isValidMove(squares.filter(sq => sq.piece), [initialXPosition, initialYPosition], [x, y])) return resetPiece(sq)
+
+
+        //isKingInCheck
+        let squaresIfMoved = chessSquaresAfterMove(squares, [initialXPosition, initialYPosition], [x, y])
+
+        let check = isAnyKingInCheck(squaresIfMoved)
+        if (turn === 'black' && check.black) return resetPiece(sq)
+        if (turn === 'white' && check.white) return resetPiece(sq)
+
+        if (check.black) setKingInCheck('black')
+        else if (check.white) setKingInCheck('white')
+        else setKingInCheck(null)
+
+
+
 
         movePiece(sq, toSquare)
         setTurn(turn === 'black' ? 'white' : 'black')
@@ -64,7 +82,6 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
 
 
     const movePiece = (fromSq: Square, toSq: Square) => {
-
         setLastMove({ from: { x: fromSq.x, y: fromSq.y }, to: { x: toSq.x, y: toSq.y } })
         let tmp = Square.fromPiecedSquare(JSON.parse(JSON.stringify(fromSq)) as Square)
         dispatch({ type: 'piece_delete', payload: fromSq })
@@ -112,7 +129,7 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
 
 
     const handleMoveUndraggables = () => {
-        if (piece.color !== turn ) {
+        if (piece.color !== turn) {
             let tmp = new Square(initialXPosition, initialYPosition, piece)
             handleMove(tmp)
         }

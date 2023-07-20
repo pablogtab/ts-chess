@@ -1,5 +1,5 @@
-import { SQUARE_SIZE } from "../chess-table";
-import { Square } from "../square"
+import { Square } from '../square';
+import { chessSquaresAfterMove, isAnyKingInCheck } from './chess';
 
 export class Piece {
     type: PieceType
@@ -8,15 +8,22 @@ export class Piece {
         this.color = color
         this.type = type
     }
-    movePosibilities: (squares: Square[], origin: Square) => Square[] = (squares: Square[], origin: Square) => {
+    movePosibilities: (all64squares: Square[], origin: Square, checkAnalisys?: boolean) => Square[] = (all64squares: Square[], origin: Square, checkAnalisys: boolean = true) => {
         if (!origin.piece) return []
-        let posibleMoves = squares.filter(sq => !(sq.x === origin.x && sq.y === origin.y) && origin.piece?.isValidMove(squares.filter(sq => sq.piece), [origin.x, origin.y], [sq.x, sq.y]))
+        let posibleMoves = all64squares.filter(sq => !(sq.x === origin.x && sq.y === origin.y) && origin.piece?.isValidMove(all64squares.filter(sq => sq.piece), [origin.x, origin.y], [sq.x, sq.y]))
+        if (checkAnalisys) {
+            posibleMoves = posibleMoves.filter(posibleMove => {
+                let chessSquares = chessSquaresAfterMove(all64squares, [origin.x, origin.y], [posibleMove.x, posibleMove.y])
+                let anyKingInCheck = isAnyKingInCheck(chessSquares)
+                if(!anyKingInCheck[this.color]) return true
+            })
+        }
         return posibleMoves
     }
 }
 
 export interface PieceMethods {
-    movePosibilities: (squares: Square[], origin: Square) => ({ x: number, y: number })[]
+    movePosibilities: (squares: Square[], origin: Square, checkAnalisys?: boolean) => ({ x: number, y: number })[]
     isValidMove: (squares: Square[], from: [number, number], to: [number, number]) => boolean
 }
 

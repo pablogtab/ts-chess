@@ -6,6 +6,7 @@ import { SquareActions, useChess } from '../hooks/useSquares';
 import { Square } from '../models/square';
 import { DraggablePiece } from './DraggablePiece';
 import { ChessContext, ChessDispatchContext } from '../context/ChessContext';
+import { chessSquaresAfterMove, isAnyKingInCheck } from '../models/pieces/chess';
 
 export const SQUARE_SIZE = 80
 
@@ -19,11 +20,26 @@ export const ChessTable = () => {
     const [posibleMoves, setPosibleMoves] = useState<{ x: number, y: number }[]>([])
     const [lastTouchedSquare, setLastTouchedSquare] = useState<Square | null>(null)
     const [lastMove, setLastMove] = useState<{ from: ({ x: number, y: number }), to: ({ x: number, y: number }) } | null>(null)
+    const [kingInCheck, setKingInCheck] = useState<'white' | 'black' | null>(null)
 
     const handleMove = (value: Square) => {
         if (lastTouchedSquare && lastTouchedSquare.piece) {
             if (lastTouchedSquare.piece.isValidMove(squares.filter(sq => sq.piece), [lastTouchedSquare.x, lastTouchedSquare.y], [value.x, value.y])) {
-                if (dispatch !== undefined && lastTouchedSquare) {
+
+                //isKingInCheck
+                let squaresIfMoved = chessSquaresAfterMove(squares, [lastTouchedSquare.x, lastTouchedSquare.y], [value.x, value.y])
+                let check = isAnyKingInCheck(squaresIfMoved)
+
+                if (turn === 'black' && check.black) return 
+                if (turn === 'white' && check.white) return 
+
+                if (check.black) setKingInCheck('black')
+                else if (check.white) setKingInCheck('white')
+                else setKingInCheck(null)
+
+
+
+                if (lastTouchedSquare) {
                     let tmp = Square.fromPiecedSquare(JSON.parse(JSON.stringify(lastTouchedSquare)) as Square)
                     dispatch({ type: 'piece_delete', payload: lastTouchedSquare })
                     tmp.x = value.x
@@ -46,6 +62,7 @@ export const ChessTable = () => {
     const SquareRender = ({ value }: { value: Square }) => {
 
         const returnContextBackgroundColor = (): string => {
+            if (kingInCheck && value.piece && value.piece.type === 'KING' && kingInCheck === value.piece.color) return '#EC7E6D'
             if (lastMove?.from.x === value.x && lastMove.from.y === value.y) return value.color === 'white' ? '#F7F681' : '#BACB3E'
             if (lastMove?.to.x === value.x && lastMove.to.y === value.y) return value.color === 'white' ? '#F7F681' : '#BACB3E'
             if (lastTouchedSquare?.x === value.x && lastTouchedSquare.y === value.y) return value.color === 'white' ? '#F7F681' : '#BACB3E'
@@ -78,11 +95,11 @@ export const ChessTable = () => {
     return (
         <ChessContext.Provider value={{
             chessTableRef, squares, turn,
-            moveIfDrops, posibleMoves, lastTouchedSquare, lastMove
+            moveIfDrops, posibleMoves, lastTouchedSquare, lastMove, kingInCheck
         }}>
             <ChessDispatchContext.Provider value={{
                 dispatch, setTurn, setMoveIfDrops, setPosibleMoves,
-                setLastTouchedSquare, handleMove, setLastMove,
+                setLastTouchedSquare, handleMove, setLastMove, setKingInCheck
             }}>
                 <div className='container' >
                     <div className='chess-container'>
@@ -99,6 +116,7 @@ export const ChessTable = () => {
                         </div>
                     </div>
                 </div>
+                <div>{JSON.stringify(kingInCheck)}</div>
             </ChessDispatchContext.Provider>
         </ChessContext.Provider>
 

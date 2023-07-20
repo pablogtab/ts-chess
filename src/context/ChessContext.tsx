@@ -12,12 +12,14 @@ type ChessContextType = {
     posibleMoves: ({ x: number, y: number })[],
     lastTouchedSquare: Square | null,
     lastMove: { from: ({ x: number, y: number }), to: ({ x: number, y: number }) } | null
+    kingInCheck: 'white' | 'black' | null
 } | undefined
 
 type ChessDispatchContextType = {
     dispatch: React.Dispatch<SquareActions>,
     setTurn: React.Dispatch<'white' | 'black'>
     setMoveIfDrops: React.Dispatch<{ x: number, y: number } | null>
+    setKingInCheck: React.Dispatch<'white' | 'black' | null>
     setPosibleMoves: React.Dispatch<({ x: number, y: number })[]>
     setLastMove: React.Dispatch<{ from: ({ x: number, y: number }), to: ({ x: number, y: number }) } | null>
     setLastTouchedSquare: React.Dispatch<Square | null>
