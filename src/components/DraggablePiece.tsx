@@ -16,10 +16,11 @@ import whitePawn from '../assets/wp.png';
 import whiteQueen from '../assets/wq.png';
 import whiteRook from '../assets/wr.png';
 import { useChessContext, useChessDispatchContext } from '../context/ChessContext';
-import { chessSquaresAfterMove, isAnyKingInCheck } from '../models/chess';
-import { Piece } from '../models/pieces/piece';
-import { Pieces, Square } from '../models/square';
+import { chessSquaresAfterMove, isAnyKingInCheck, movePosibilities } from '../models/chess';
+import { Piece, Pieces } from '../models/pieces/piece';
+import { Square } from '../models/square';
 import { SQUARE_SIZE } from './ChessTable';
+import { isValidMove } from '../models/pieces/moves';
 
 export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { piece: Pieces, initialXPosition: number, initialYPosition: number }) => {
 
@@ -40,8 +41,10 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
 
 
         if (!sq || !sq.piece) return
+        let type = sq.piece.type
+        let color = sq.piece.color
 
-        if (!toSquare || !sq.piece.isValidMove(squares.filter(sq => sq.piece), [initialXPosition, initialYPosition], [x, y])) return resetPiece(sq)
+        if (!toSquare || !isValidMove(type)(squares.filter(sq => sq.piece), [initialXPosition, initialYPosition], [x, y], color)) return resetPiece(sq)
 
 
         //isKingInCheck
@@ -83,7 +86,7 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
 
     const movePiece = (fromSq: Square, toSq: Square) => {
         setLastMove({ from: { x: fromSq.x, y: fromSq.y }, to: { x: toSq.x, y: toSq.y } })
-        let tmp = Square.fromPiecedSquare(JSON.parse(JSON.stringify(fromSq)) as Square)
+        let tmp = structuredClone(fromSq)
         dispatch({ type: 'piece_delete', payload: fromSq })
         tmp.x = toSq.x
         tmp.y = toSq.y
@@ -93,7 +96,7 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
 
     const resetPiece = (sq: Square | undefined) => {
         if (sq) {
-            let tmp = Square.fromPiecedSquare(JSON.parse(JSON.stringify(sq)) as Square)
+            let tmp = structuredClone(sq)
             dispatch({ type: 'piece_delete', payload: sq });
             setTimeout(() => {
                 dispatch({ type: 'piece_reset', payload: tmp })
@@ -120,7 +123,7 @@ export const DraggablePiece = ({ piece, initialXPosition, initialYPosition }: { 
         }
         let sq = squares.find(sq => sq.x === initialXPosition && sq.y === initialYPosition)
         if (sq) {
-            setPosibleMoves([...piece.movePosibilities(squares, sq)])
+            setPosibleMoves([...movePosibilities(squares, sq)])
             setLastTouchedSquare(sq)
         }
     }
