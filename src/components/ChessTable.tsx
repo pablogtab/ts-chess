@@ -29,7 +29,7 @@ export const ChessTable = () => {
         if (turn === 'black') {
             setTimeout(() => {
 
-                let move = bestNextMove(squares, turn, 3)
+                let move = bestNextMove(squares, turn, 2)
                 if (move) {
                     let sqFrom = squares.find(sq => sq.x === move?.fromX && sq.y === move?.fromY)
                     let sqTo = squares.find(sq => sq.x === move?.toX && sq.y === move?.toY)
